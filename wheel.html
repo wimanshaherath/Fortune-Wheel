@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *
+        {
+            box-sizing: border-box;
+        }
+        .magicbox{
+            display: grid;
+            background-color: gray;
+            margin: 0;
+            width:100%;
+            height: auto;
+            position: relative;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,0%);
+            align-items: center;
+            justify-content: center;
+        }
+        .magicbox:before{
+            position:absolute;
+            content:"V";
+            top:0;
+            left:50%;
+            width:32px;
+            height: 32px;
+            color:white;
+            font-size: 18pt;
+            font-weight: 200;
+            padding:0;
+            z-index: 2;
+        }
+
+        #canvas
+        {
+            position: relative;
+        }
+        .btn-spin{
+            position: relative;
+            top:-221px;
+            left:176px;
+            width:3rem;
+            height:3rem;
+            border-radius: 50%;
+            border:2px solid black;
+            background-color: white;
+            color:black;
+            cursor: pointer;
+        }
+        .labelDis{
+            position: relative;
+            top:-20px;
+            width:400px; 
+            height:50px; 
+            background-color:cadetblue;
+            padding-bottom: 1rem;
+            text-align: center;
+        }
+        #cat
+        {
+            position: relative;
+            top:-50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="magicbox">
+        <canvas id="canvas" width="400px" height="400px" style=" transform: rotateZ(30deg);"></canvas>
+        <button type="button" class="btn-spin" onclick="spin() ,selecting()">Spin</button>
+        <div class="labelDis"><h1 id="cat">Category</h1></div>
+
+    </div>
+    
+    <script>
+        var canvas=document.getElementById("canvas");
+        var lbl=document.getElementById("cat");
+        var categories=["Braking Bad","Marvel","DC","20th Cen. fox","WB","LionsGate"];
+        var isrotate=false;
+        const _TIMER_=8000;
+        var ctx=canvas.getContext("2d");
+
+        //making the wheel;
+        var nuberOfSlices=6
+        var x=(Math.PI*2)/nuberOfSlices;
+        var s=0;
+        for(var i=0;i<nuberOfSlices;i+=1)
+        {
+            
+            var g=Math.floor(225-42.5*i);
+            var r=Math.floor(Math.random()*224);
+            var b=Math.floor(Math.random()*224);
+            ctx.beginPath();
+            ctx.fillStyle="rgb("+r+","+g+","+b+")";
+            ctx.moveTo(200,200);
+            ctx.arc(200,200,180,s,s+x);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.save();
+            ctx.translate(200,200);
+            ctx.rotate(s+(x/2));
+            ctx.textAlign="center";
+            ctx.fillStyle="black";
+            ctx.font="20px Arial"
+            ctx.fillText(categories[i],100,10);
+            ctx.restore();
+            s+=x;
+            console.log(i+" "+ x+" "+ s);/////////////////
+            
+        }
+
+
+        var m=1024;
+        var n=9999;
+        var d=Math.floor(Math.random()*(m-n))+n;
+        
+        console.log(d);////////////////////////////////////////
+
+        var rotatedValue=(d%360);
+        console.log("rotatedVAl "+rotatedValue);////////////////////////
+
+        s=0;
+        var sliceValue=(x/Math.PI)*180;
+        var selectedOne;
+  
+        console.log("sliceValue "+sliceValue);//////////////////
+
+        function checking()
+        {
+            console.log(isrotate);////////////////////
+
+            if(isrotate===true)
+            {
+                var ai=Math.floor(((360-d-90)%360)/sliceValue);
+                console.log("ai "+ai);//////////////////////
+                ai=(nuberOfSlices+ai)%nuberOfSlices;
+                selectedOne=categories[ai];
+                // if((s<=rotatedValue && rotatedValue<(sliceValue/2))||((360-sliceValue/2)<rotatedValue && rotatedValue<=360))
+                //     selectedOne=categories[0];
+                // for(var i=1;i<nuberOfSlices-1;i++)
+                // {
+                //     if((s<=rotatedValue && rotatedValue<(s+sliceValue/2)) ||((s+sliceValue/2)<=rotatedValue && rotatedValue<(s+sliceValue)))
+                //     {
+                //         // if(i>5)
+                //         // {
+                //         //     selectedOne=categories[i-6];
+                //         //     break;
+                //         // }
+                //         selectedOne=categories[i];
+                //         break;
+                //     }
+                //     s+=rotatedValue;
+                //     console.log("i "+i+"-"+categories[i]);
+                // }
+                // console.log("s "+s+" rotatedval "+rotatedValue);//////////////////////
+            } 
+                
+        }
+
+        function spin()
+        {
+            canvas.style.transition='all '+ _TIMER_+'ms '+'ease';
+            canvas.style.transform='rotateZ('+ d+'deg'+')';
+            isrotate=true;
+            checking();
+        }
+        
+        
+        
+     
+        function selecting(){
+            setTimeout(()=>{
+                lbl.innerHTML=selectedOne;
+            },_TIMER_);
+            
+        }
+        
+        
+        
+        
+    </script>
+</body>
+</html>
